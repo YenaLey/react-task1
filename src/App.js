@@ -1,68 +1,79 @@
 /*eslint-disable*/ //터미널에서 warning 메세지(Lint) 지워줌
 
-import logo from './logo.svg';
 import './App.css';
 import { useState } from 'react';
 
 function App() {
 
-  let [글제목, 글제목변경] = useState(['남자 코트 추천', '강남 우동 맛짐', '파이썬 독학'])
+  let [글제목, 글제목변경] = useState(['웹 프로그래밍 언어', '앱테크 추천', '하루 만에 어플 만들기', '프론트엔드 백엔드 차이점', '프론트엔드 기술 면접', '프론트엔드 사이드 프로젝트'])
 
-  let [따봉, 따봉변경] = useState(0);
+  let [따봉, 따봉변경] = useState([0, 0, 0, 0, 0, 0]);
+  let [다운, 다운변경] = useState([0, 0, 0, 0, 0, 0]);
+
+  let [모달, 모달변경] = useState(0);
+
+  let [모달제목, 모달제목변경] = useState('');
 
   return (
-    <div className="App">
+    <div className="container">
 
-      <div className="black-nav">
-        <h4 style={{color:'pink', fontSize:'16px'}}>ReactBlog</h4>
-      </div>
+      {
+        글제목.map(function (element, count) {
 
-      <button onClick={()=>{
-        let copylst = [...글제목];
-        copylst.sort();
-        글제목변경(copylst);
-      }}>정렬</button>
+          return (
+            <List index={count} 글제목={글제목} 글제목변경={글제목변경} 따봉={따봉} 따봉변경={따봉변경} 다운={다운} 다운변경={다운변경} 모달={모달} 모달변경={모달변경} 모달제목변경={모달제목변경}></List>
+          )
+        })
+      }
 
-      <div className = "list">
-        <h4>{ 글제목[0] } <span onClick={()=>{ 따봉변경(따봉+1) }}>👍</span> { 따봉 } </h4>
-        <button onClick={()=>{
-          let copy = [...글제목];
-          copy[0] = '여자 코트 추천';
-          글제목변경(copy);
-        }}>🤵‍♂️</button>
-        <p>12월 18일 발행</p>
-      </div>
+      {
+        모달 == 1 ? <Modal 모달제목={모달제목}></Modal> : null
+      }
 
-      <div className = "list">
-        <h4>{ 글제목[1] }</h4>
-        <p>12월 18일 발행</p>
-      </div>
-      
-      <div className = "list">
-        <h4>{ 글제목[2] }</h4>
-        <p>12월 18일 발행</p>
-      </div>
 
-      <Modal></Modal>
-      
     </div>
   );
 }
 
-//component
-function Modal(){
+function Modal(props) {
   return (
-    <div className="madal">
-      <h4>제목</h4>
+    <div className="modal">
+      <h4>{props.모달제목}</h4>
       <p>날짜</p>
       <p>상세내용</p>
     </div>
   )
 }
 
-let comp = () => {
+function List(props) {
   return (
-    <div></div>
+    <div className="list">
+      <h4
+        onClick={() => {
+          if (props.모달 == 0) {
+            props.모달제목변경(props.글제목[props.index]);
+            props.모달변경(1);
+          }
+          else {
+            props.모달변경(0);
+          }
+        }}
+      >{props.글제목[props.index]}
+        <span onClick={(event) => {
+          event.stopPropagation();
+          let copy따봉 = [...props.따봉];
+          copy따봉[props.index] += 1;
+          props.따봉변경(copy따봉);
+        }}>👍</span>{props.따봉[props.index]}
+        <span onClick={(event) => {
+          event.stopPropagation();
+          let copy다운 = [...props.다운];
+          copy다운[props.index] += 1;
+          props.다운변경(copy다운);
+        }}>👎</span>{props.다운[props.index]}
+      </h4>
+      <p>12월 18일 발행</p>
+    </div>
   )
 }
 
